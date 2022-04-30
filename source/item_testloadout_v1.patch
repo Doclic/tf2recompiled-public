@@ -1,0 +1,118 @@
+From 1fad64694892169516db977a1bf36b8065587a23 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 02:50:08 +0200
+Subject: [PATCH] item_testloadout
+
+---
+ hl2_src/game/server/tf/tf_player.cpp | 69 ++++++++++++++++++++++++++++
+ hl2_src/game/server/tf/tf_player.h   |  7 +++
+ 2 files changed, 76 insertions(+)
+
+diff --git a/hl2_src/game/server/tf/tf_player.cpp b/hl2_src/game/server/tf/tf_player.cpp
+index 00a8c1a..60751a2 100644
+--- a/hl2_src/game/server/tf/tf_player.cpp
++++ b/hl2_src/game/server/tf/tf_player.cpp
+@@ -4684,6 +4684,28 @@ void CTFPlayer::ManageRegularWeapons( TFPlayerClassData_t *pData )
+ //-----------------------------------------------------------------------------
+ CEconItemView *CTFPlayer::GetLoadoutItem( int iClass, int iSlot, bool bReportWhitelistFails )
+ {
++	// Patch Start: item_testloadout (2/3); Doclic; 03/26/2022-03/27/2022 //
++
++	// Returns override if needed
++	switch (iSlot) {
++	case LOADOUT_POSITION_PRIMARY:
++		if (m_hPrimaryWeaponOverride)
++			return m_hPrimaryWeaponOverride;
++
++		break;
++	case LOADOUT_POSITION_SECONDARY:
++		if (m_hSecondaryWeaponOverride)
++			return m_hSecondaryWeaponOverride;
++
++		break;
++	case LOADOUT_POSITION_MELEE:
++		if (m_hMeleeWeaponOverride)
++			return m_hMeleeWeaponOverride;
++
++		break;
++	}
++	// Patch End //
++
+ 	if ( TFGameRules()->IsInItemTestingMode() )
+ 	{
+ 		CEconItemView *pItem = ItemTesting_GetTestItem( iClass, iSlot );
+@@ -20306,6 +20328,53 @@ CON_COMMAND_F( item_testitem, "Creates a server-side item of the specified type,
+ 
+ #endif // STAGING_ONLY
+ 
++// Patch Start: item_testloadout (3/3); Doclic; 03/26/2022-03/27/2022 //
++CON_COMMAND_F(item_testloadout, "this again https://www.youtube.com/watch?v=OjHOAfHokqk", FCVAR_NONE)
++{
++	CTFPlayer *pPlayer = ToTFPlayer(UTIL_GetCommandClient());
++	if (!pPlayer)
++		return;
++
++	if (args.ArgC() == 1) {
++		pPlayer->m_hPrimaryWeaponOverride = NULL;
++		pPlayer->m_hSecondaryWeaponOverride = NULL;
++		pPlayer->m_hMeleeWeaponOverride = NULL;
++		Msg("The forced loadout has been reset\n");
++		return;
++	}
++	else if (args.ArgC() < 4)
++	{
++		Msg("Too few parameters. Usage: item_testloadout <primary item definition> <secondary item definition> <melee item definition>\n");
++		return;
++	}
++
++	for (int i = 1; i < 4; i++) {
++		CItemSelectionCriteria criteria;
++		criteria.SetQuality(AE_USE_SCRIPT_VALUE);
++		criteria.BAddCondition("name", k_EOperator_String_EQ, args[i], true);
++
++		CBaseEntity *pItem = ItemGeneration()->GenerateRandomItem(&criteria, pPlayer->WorldSpaceCenter(), vec3_angle);
++		if (pItem)
++		{
++			CEconItemView *pScriptItem = static_cast<CBaseCombatWeapon*>(pItem)->GetAttributeContainer()->GetItem();
++			switch (i) {
++			case 1:
++				pPlayer->m_hPrimaryWeaponOverride = pScriptItem;
++				break;
++			case 2:
++				pPlayer->m_hSecondaryWeaponOverride = pScriptItem;
++				break;
++			case 3:
++				pPlayer->m_hMeleeWeaponOverride = pScriptItem;
++				break;
++			}
++
++		}
++		else Warning("Failed to create an item named '%s'\n", args[i]);
++	}
++}
++// Patch End //
++
+ //-----------------------------------------------------------------------------
+ // Purpose: Adds this damager to the history list of people whose sentry damaged player
+ //-----------------------------------------------------------------------------
+diff --git a/hl2_src/game/server/tf/tf_player.h b/hl2_src/game/server/tf/tf_player.h
+index 90961b9..e7536fb 100644
+--- a/hl2_src/game/server/tf/tf_player.h
++++ b/hl2_src/game/server/tf/tf_player.h
+@@ -68,6 +68,13 @@ enum EAmmoSource
+ class CTFPlayer : public CBaseMultiplayerPlayer, public IHasAttributes, public IInventoryUpdateListener
+ {
+ public:
++
++	// Patch Start: item_testloadout (1/3); Doclic; 03/26/2022-03/27/2022 //
++	CEconItemView *m_hPrimaryWeaponOverride = NULL;
++	CEconItemView *m_hSecondaryWeaponOverride = NULL;
++	CEconItemView *m_hMeleeWeaponOverride = NULL;
++	// Patch End //
++
+ 	DECLARE_CLASS( CTFPlayer, CBaseMultiplayerPlayer );
+ 	DECLARE_SERVERCLASS();
+ 	DECLARE_DATADESC();
+-- 
+2.24.1.windows.2
+

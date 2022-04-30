@@ -1,0 +1,34 @@
+From b524230651a9d0dc0139fa81a35d4dd884b040c0 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Sat, 16 Apr 2022 11:52:18 +0200
+Subject: [PATCH] No item schema sig check
+
+---
+ hl2_src/game/shared/econ/econ_item_schema.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/hl2_src/game/shared/econ/econ_item_schema.cpp b/hl2_src/game/shared/econ/econ_item_schema.cpp
+index 1093c5c..458f7cf 100644
+--- a/hl2_src/game/shared/econ/econ_item_schema.cpp
++++ b/hl2_src/game/shared/econ/econ_item_schema.cpp
+@@ -6226,7 +6226,7 @@ bool CEconItemSchema::BInit( const char *fileName, const char *pathID, CUtlVecto
+ 	SCHEMA_INIT_CHECK( bReadFileOK, "Cannot load file '%s'", fileName );
+ 
+ 	// Do we need to check the signature?
+-	#if defined(TF_DLL) || defined(TF_CLIENT_DLL)
++	/*#if defined(TF_DLL) || defined(TF_CLIENT_DLL) // One Line Patch: No item schema sig check; Doclic; 04/16/2022 //
+ 	{
+ 
+ 		// Load up the signature
+@@ -6254,7 +6254,7 @@ bool CEconItemSchema::BInit( const char *fileName, const char *pathID, CUtlVecto
+ 
+ 		SCHEMA_INIT_CHECK( bSignatureValid, "'%s' is corrupt.  Please verify your local game files.  (https://support.steampowered.com/kb_article.php?ref=2037-QEUH-3335)", fileName );
+ 	}
+-	#endif
++	#endif*/ // One Line Patch: No item schema sig check; Doclic; 04/16/2022 //
+ 
+ 	// Compute version hash
+ 	CSHA1 sha1;
+-- 
+2.24.1.windows.2
+

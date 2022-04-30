@@ -1,0 +1,25 @@
+From 20eb756371b7c4df610aee79decf5378970ab9aa Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 02:30:00 +0200
+Subject: [PATCH] Prevent impulse 101 from giving you full charge
+
+---
+ hl2_src/game/server/tf/tf_player.cpp | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/hl2_src/game/server/tf/tf_player.cpp b/hl2_src/game/server/tf/tf_player.cpp
+index 00a8c1a..26c2e3d 100644
+--- a/hl2_src/game/server/tf/tf_player.cpp
++++ b/hl2_src/game/server/tf/tf_player.cpp
+@@ -14023,7 +14023,7 @@ void CTFPlayer::CheatImpulseCommands( int iImpulse )
+ 					}
+ 				}
+ 
+-				m_Shared.m_flRageMeter = 100.f;
++				//m_Shared.m_flRageMeter = 100.f; // One Line Patch: Prevent impulse 101 from giving you full charge; Doclic; 04/12/2022 //
+ 				m_Shared.SetDemomanChargeMeter( 100.f );
+ 
+ 				gEvilImpulse101 = false;
+-- 
+2.24.1.windows.2
+

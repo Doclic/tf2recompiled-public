@@ -1,0 +1,82 @@
+From 22b89dfd11d7e806d404bf49e74e7225a620bdf7 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 02:58:38 +0200
+Subject: [PATCH] bot_clone
+
+---
+ hl2_src/game/server/tf/tf_bot_temp.cpp | 59 ++++++++++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+
+diff --git a/hl2_src/game/server/tf/tf_bot_temp.cpp b/hl2_src/game/server/tf/tf_bot_temp.cpp
+index ea58bc2..0c3c929 100644
+--- a/hl2_src/game/server/tf/tf_bot_temp.cpp
++++ b/hl2_src/game/server/tf/tf_bot_temp.cpp
+@@ -1384,6 +1384,65 @@ CON_COMMAND_F( bot_teleport, "Teleport the specified bot to the specified positi
+ 	
+ }
+ 
++// Patch Start: bot_clone; Doclic; 04/13/2022 //
++//------------------------------------------------------------------------------
++// Purpose: Makes a clone of the player as a bot
++//------------------------------------------------------------------------------
++CON_COMMAND_F(bot_clone, "Creates a clone of you but as a bot", FCVAR_CHEAT)
++{
++	CTFPlayer *pPlayer = ToTFPlayer(UTIL_GetCommandClient());
++	if (!pPlayer) {
++		return;
++	}
++
++
++	// Listenserver host or rcon access only!
++	if (!UTIL_IsCommandIssuedByServerAdmin())
++		return;
++
++	// Allow bots in item testing mode
++	if (!sv_cheats->GetBool() && !TFGameRules()->IsInItemTestingMode())
++		return;
++
++	//CDODPlayer *pPlayer = CDODPlayer::Instance( UTIL_GetCommandClientIndex() );
++
++	// The bot command uses switches like command-line switches.
++	// -count <count> tells how many bots to spawn.
++	// -name sets the bot's name
++	// -targetdummy sets their health to 1,000,000.  Useful for testing damage via hud_damagemeter.
++
++	// Look at -count.
++	int count = args.FindArgInt("-count", 1);
++	count = clamp(count, 1, 16);
++
++	// Look at -targetdummy.
++	bool bTargetDummy = !!args.FindArg("-targetdummy");
++
++	// Ok, spawn all the bots.
++	while (--count >= 0)
++	{
++		// Class & Team
++		int iClass = pPlayer->GetDesiredPlayerClassIndex();
++		int iTeam = pPlayer->GetTeamNumber();
++
++		char const *pName = args.FindArg("-name");
++
++		CBasePlayer *pTemp = BotPutInServer(bTargetDummy, false, iTeam, iClass, pName);
++
++		if (pTemp)
++		{
++			CTFPlayer *pBot = ToTFPlayer(pTemp);
++			CBasePlayer *pPlayer = UTIL_GetCommandClient();
++			if (pPlayer && pBot)
++			{
++				pBot->Teleport(&pPlayer->GetAbsOrigin(), &pPlayer->GetAbsAngles(), NULL);
++			}
++		}
++	}
++
++}
++// Patch End //
++
+ //------------------------------------------------------------------------------
+ // Purpose: Force the specified bot to create & equip an item
+ //------------------------------------------------------------------------------
+-- 
+2.24.1.windows.2
+

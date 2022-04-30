@@ -1,0 +1,30 @@
+From aa4e1fd974bfe649804a9e1892a9ee4fa4dfb669 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 02:00:55 +0200
+Subject: [PATCH] Crossbow insta-hits teammates
+
+---
+ hl2_src/game/shared/baseprojectile.cpp | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/hl2_src/game/shared/baseprojectile.cpp b/hl2_src/game/shared/baseprojectile.cpp
+index f2ff3fd..cdea209 100644
+--- a/hl2_src/game/shared/baseprojectile.cpp
++++ b/hl2_src/game/shared/baseprojectile.cpp
+@@ -84,6 +84,13 @@ void CBaseProjectile::CollideWithTeammatesThink()
+ //-----------------------------------------------------------------------------
+ void CBaseProjectile::ResetCollideWithTeammates()
+ {
++	// Patch Start: Crossbow insta-hits teammates; Doclic; 03/24/2022 //
++	if (GetCollideWithTeammatesDelay() <= 0) {
++		m_bCanCollideWithTeammates = true;
++		return;
++	}
++	// Patch End //
++
+ 	// Don't collide with players on the owner's team for the first bit of our life
+ 	m_bCanCollideWithTeammates = false;
+ 	
+-- 
+2.24.1.windows.2
+

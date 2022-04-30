@@ -1,0 +1,70 @@
+From 84ab3815f84e928acaee7bddd0e47824676b8962 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 03:09:33 +0200
+Subject: [PATCH] B-Hopping
+
+---
+ hl2_src/game/shared/tf/tf_gamemovement.cpp | 20 ++++++++++++++++----
+ 1 file changed, 16 insertions(+), 4 deletions(-)
+
+diff --git a/hl2_src/game/shared/tf/tf_gamemovement.cpp b/hl2_src/game/shared/tf/tf_gamemovement.cpp
+index 86c7087..36ffeb8 100644
+--- a/hl2_src/game/shared/tf/tf_gamemovement.cpp
++++ b/hl2_src/game/shared/tf/tf_gamemovement.cpp
+@@ -38,6 +38,10 @@
+ #endif
+ 
+ 
++// Patch Start: B-Hopping (1/4); Doclic; 04/13/2022 //
++ConVar	tf_bunny_hopping("tf_bunny_hopping", "0", FCVAR_CHEAT);
++// Patch End //
++
+ ConVar	tf_duck_debug_spew( "tf_duck_debug_spew", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+ ConVar	tf_showspeed( "tf_showspeed", "0", FCVAR_REPLICATED | FCVAR_DEVELOPMENTONLY );
+ ConVar	tf_avoidteammates( "tf_avoidteammates", "1", FCVAR_REPLICATED | FCVAR_CHEAT | FCVAR_DEVELOPMENTONLY, "Controls how teammates interact when colliding.\n  0: Teammates block each other\n  1: Teammates pass through each other, but push each other away (default)" );
+@@ -1090,6 +1094,10 @@ void CTFGameMovement::AirDash( void )
+ 
+ void CTFGameMovement::PreventBunnyJumping()
+ {
++	// Patch Start: B-Hopping (2/4); Doclic; 04/11/2022 //
++	if (tf_bunny_hopping.GetBool()) return;
++	// Patch End //
++
+ 	if ( m_pTFPlayer->m_Shared.InCond( TF_COND_HALLOWEEN_KART ) )
+ 		return;
+ 
+@@ -1218,23 +1226,27 @@ bool CTFGameMovement::CheckJumpButton()
+ 
+ 	ToggleParachute();
+ 
++	// Patch Start: B-Hopping (3/4); Doclic; 04/11/2022 //
+ 	// Cannot jump will ducked.
+-	if ( player->GetFlags() & FL_DUCKING )
++	if (!tf_bunny_hopping.GetBool() && player->GetFlags() & FL_DUCKING)
+ 	{
+ 		// Let a scout do it.
+-		bool bAllow = ( bScout && !bOnGround );
++		bool bAllow = (bScout && !bOnGround);
+ 
+-		if ( !bAllow )
++		if (!bAllow)
+ 			return false;
+ 	}
++	// Patch End //
+ 
+ 	// Cannot jump while in the unduck transition.
+ 	if ( ( player->m_Local.m_bDucking && (  player->GetFlags() & FL_DUCKING ) ) || ( player->m_Local.m_flDuckJumpTime > 0.0f ) )
+ 		return false;
+ 
++	// Patch Start: B-Hopping (4/4); Doclic; 04/11/2022 //
+ 	// Cannot jump again until the jump button has been released.
+-	if ( mv->m_nOldButtons & IN_JUMP )
++	if (!tf_bunny_hopping.GetBool() && mv->m_nOldButtons & IN_JUMP)
+ 		return false;
++	// Patch End //
+ 
+ 	// In air, so ignore jumps 
+ 	// (unless you are a scout or ghost or parachute
+-- 
+2.24.1.windows.2
+

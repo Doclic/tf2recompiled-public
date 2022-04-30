@@ -1,0 +1,34 @@
+From 3221545e0943e590d8f351194401fbac9815c978 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Sat, 23 Apr 2022 00:11:51 +0200
+Subject: [PATCH] Various bot commands
+
+---
+ hl2_src/game/server/tf/tf_bot_temp.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/hl2_src/game/server/tf/tf_bot_temp.cpp b/hl2_src/game/server/tf/tf_bot_temp.cpp
+index ea58bc2..bcaa768 100644
+--- a/hl2_src/game/server/tf/tf_bot_temp.cpp
++++ b/hl2_src/game/server/tf/tf_bot_temp.cpp
+@@ -1513,7 +1513,7 @@ CON_COMMAND_F( bot_mirror, "Forces the specified bot to be the same class, and u
+ 	}
+ }
+ 
+-#ifdef STAGING_ONLY
++//#ifdef STAGING_ONLY // One Line Patch: Various bot commands; Doclic; 04/23/2022 //
+ //------------------------------------------------------------------------------
+ // Purpose: Force the specified bot to create & equip an item
+ //------------------------------------------------------------------------------
+@@ -1582,7 +1582,7 @@ void cc_bot_taunt( const CCommand &args )
+ static ConCommand bot_taunt("bot_taunt", cc_bot_taunt, "Force the specified bot to taunt with specific taunt name.\n\tFormat: bot_taunt <bot name> <taunt_name>", FCVAR_CHEAT );
+ 
+ 
+-#endif // STAGING_ONLY
++//#endif // STAGING_ONLY // One Line Patch: Various bot commands; Doclic; 04/23/2022 //
+ 
+ //------------------------------------------------------------------------------
+ // Purpose: Force the specified bot to select a weapon in the specified slot
+-- 
+2.24.1.windows.2
+

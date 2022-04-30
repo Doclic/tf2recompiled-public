@@ -1,0 +1,56 @@
+From db86c9f939c650f49ca9fe49b855e7eaaa244e42 Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 02:56:23 +0200
+Subject: [PATCH] bot_teleport to self
+
+---
+ hl2_src/game/server/tf/tf_bot_temp.cpp | 32 ++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 5 deletions(-)
+
+diff --git a/hl2_src/game/server/tf/tf_bot_temp.cpp b/hl2_src/game/server/tf/tf_bot_temp.cpp
+index ea58bc2..977c06f 100644
+--- a/hl2_src/game/server/tf/tf_bot_temp.cpp
++++ b/hl2_src/game/server/tf/tf_bot_temp.cpp
+@@ -1371,12 +1371,34 @@ CON_COMMAND_F( bot_whack, "Deliver lethal damage from player to specified bot. U
+ CON_COMMAND_F( bot_teleport, "Teleport the specified bot to the specified position & angles.\n\tFormat: bot_teleport <bot name> <X> <Y> <Z> <Pitch> <Yaw> <Roll>", FCVAR_CHEAT )
+ {
+ 	CUtlVector< CTFPlayer* > botVector;
+-	GetBotsFromCommand( args, 8, "Usage: bot_teleport <bot name> <X> <Y> <Z> <Pitch> <Yaw> <Roll>", &botVector );
+-	if ( botVector.IsEmpty() )
+-		return;
++	// Patch Start: bot_teleport to self; Doclic; 04/13/2022 //
++	Vector vecPos;
++	QAngle vecAng;
++
++	if (args.ArgC() == 2) {
++		GetBotsFromCommand(args, 2, "Usage: bot_teleport <bot name>", &botVector);
++
++		if (botVector.IsEmpty())
++			return;
++
++		CTFPlayer *pPlayer = ToTFPlayer(UTIL_GetCommandClient());
++		if (!pPlayer) {
++			return;
++		}
++		vecPos = pPlayer->GetAbsOrigin();
++		vecAng = pPlayer->GetAbsAngles();
++	}
++	else {
++		GetBotsFromCommand(args, 8, "Usage: bot_teleport <bot name> <X> <Y> <Z> <Pitch> <Yaw> <Roll>", &botVector);
++
++		if (botVector.IsEmpty())
++			return;
++
++		vecPos = Vector(atof(args[2]), atof(args[3]), atof(args[4]));
++		vecAng = QAngle(atof(args[5]), atof(args[6]), atof(args[7]));
++	}
++	// Patch End //
+ 
+-	Vector vecPos( atof(args[2]), atof(args[3]), atof(args[4]) );
+-	QAngle vecAng( atof(args[5]), atof(args[6]), atof(args[7]) );
+ 	FOR_EACH_VEC( botVector, i )
+ 	{
+ 		botVector[i]->Teleport( &vecPos, &vecAng, NULL );
+-- 
+2.24.1.windows.2
+

@@ -1,0 +1,34 @@
+From c5dd121d2c25f321ea225a4190cf60a9e757d71d Mon Sep 17 00:00:00 2001
+From: Doclic <doclicwastaken@gmail.com>
+Date: Fri, 15 Apr 2022 02:13:01 +0200
+Subject: [PATCH] Make item_testitem non STAGING_ONLY
+
+---
+ hl2_src/game/server/tf/tf_player.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/hl2_src/game/server/tf/tf_player.cpp b/hl2_src/game/server/tf/tf_player.cpp
+index 00a8c1a..991c744 100644
+--- a/hl2_src/game/server/tf/tf_player.cpp
++++ b/hl2_src/game/server/tf/tf_player.cpp
+@@ -20232,7 +20232,7 @@ bool CAchievementData::IsPusherInHistory( CBaseEntity *pPlayer, float flTimeWind
+ 	return false;
+ }
+ 
+-#ifdef STAGING_ONLY
++//#ifdef STAGING_ONLY // One Line Patch: Make item_testitem non STAGING_ONLY (1/2); Unknown author; Unknown creation date //
+ CON_COMMAND_F( item_testitem, "Creates a server-side item of the specified type, and gives it to the player. Does NOT create the item on the Steam backend.", FCVAR_NONE )
+ {
+ 	if ( args.ArgC() < 2 )
+@@ -20304,7 +20304,7 @@ CON_COMMAND_F( item_testitem, "Creates a server-side item of the specified type,
+ 	}
+ }
+ 
+-#endif // STAGING_ONLY
++//#endif // STAGING_ONLY // One Line Patch: Make item_testitem non STAGING_ONLY (2/2); Unknown author; Unknown creation date //
+ 
+ //-----------------------------------------------------------------------------
+ // Purpose: Adds this damager to the history list of people whose sentry damaged player
+-- 
+2.24.1.windows.2
+

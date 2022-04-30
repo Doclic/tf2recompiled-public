@@ -1,0 +1,39 @@
+# git related files
+.gitignore
+*.patch
+
+# ignore external dependencies for now
+hl2_src/thirdparty/protobuf-2.5.0
+hl2_src/thirdparty/protoc-2.5.0-win32
+hl2_src/dx9sdk
+
+# ignore vs-generated stuff
+.vs/
+Release/
+Release_*/
+Debug/
+*.tlog/
+hl2_src/tf2.VC.VC.opendb
+hl2_src/tf2.VC.db
+hl2_src/ipch/
+
+# ignore generated protobufs
+generated_proto*/
+
+*.lib
+*.a
+*.dylib
+*.xz
+*.vpc.sentinel
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.vpc_crc
+*.obj
+*.pch
+*.pdb
+
+# ignore output game
+./game
+
+# ignore generated outputs in source folder
+game/**/*.dll
