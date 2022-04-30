@@ -1,0 +1,1 @@
+Setting your DirectX level (through the -dxlevel startup arg) to 91 can fix lightning not appearing sometimes
