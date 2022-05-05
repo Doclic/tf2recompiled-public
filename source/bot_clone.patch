@@ -1,18 +1,18 @@
-From 22b89dfd11d7e806d404bf49e74e7225a620bdf7 Mon Sep 17 00:00:00 2001
+From 0b12b65730bd78dc3bb4d3c1f9e3c9e5a442c4a4 Mon Sep 17 00:00:00 2001
 From: Doclic <doclicwastaken@gmail.com>
-Date: Fri, 15 Apr 2022 02:58:38 +0200
+Date: Thu, 5 May 2022 05:40:51 +0200
 Subject: [PATCH] bot_clone
 
 ---
- hl2_src/game/server/tf/tf_bot_temp.cpp | 59 ++++++++++++++++++++++++++
- 1 file changed, 59 insertions(+)
+ hl2_src/game/server/tf/tf_bot_temp.cpp | 60 ++++++++++++++++++++++++++
+ 1 file changed, 60 insertions(+)
 
 diff --git a/hl2_src/game/server/tf/tf_bot_temp.cpp b/hl2_src/game/server/tf/tf_bot_temp.cpp
-index ea58bc2..0c3c929 100644
+index ea58bc2..451fc2d 100644
 --- a/hl2_src/game/server/tf/tf_bot_temp.cpp
 +++ b/hl2_src/game/server/tf/tf_bot_temp.cpp
-@@ -1384,6 +1384,65 @@ CON_COMMAND_F( bot_teleport, "Teleport the specified bot to the specified positi
- 	
+@@ -1496,6 +1496,66 @@ void BotMirrorPlayerClassAndItems( CTFPlayer *pBot, CTFPlayer *pPlayer )
+ 	}
  }
  
 +// Patch Start: bot_clone; Doclic; 04/13/2022 //
@@ -67,6 +67,7 @@ index ea58bc2..0c3c929 100644
 +			if (pPlayer && pBot)
 +			{
 +				pBot->Teleport(&pPlayer->GetAbsOrigin(), &pPlayer->GetAbsAngles(), NULL);
++				BotMirrorPlayerClassAndItems(pBot, ToTFPlayer(pPlayer));
 +			}
 +		}
 +	}
@@ -75,7 +76,7 @@ index ea58bc2..0c3c929 100644
 +// Patch End //
 +
  //------------------------------------------------------------------------------
- // Purpose: Force the specified bot to create & equip an item
+ // Purpose:
  //------------------------------------------------------------------------------
 -- 
 2.24.1.windows.2
