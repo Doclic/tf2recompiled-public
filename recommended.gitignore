@@ -37,3 +37,6 @@ generated_proto*/
 
 # ignore generated outputs in source folder
 game/**/*.dll
+hl2_src/game/**/*.dll
+hl2_src/game/**/*.exp
+hl2_src/game/**/*.ilk
